@@ -189,6 +189,15 @@ case "$script_type" in
             done
             add_domains_to_resolv_conf $foreign_opt_domains
         fi
+
+        # add Virtual Ethernet Device linking to the default namespace
+        ip link add name vethhost0 type veth peer name vethvpn0
+        ip link set vethvpn0 netns "$NETNS"
+        ip addr add 10.0.0.1/24 dev vethhost0
+        ip netns exec vpn ip addr add 10.0.0.2/24 dev vethvpn0
+        ip link set vethhost0 up
+        ip netns exec vpn ip link set vethvpn0 up
+
         ;;
 
 
