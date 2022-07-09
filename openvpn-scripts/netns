@@ -199,6 +199,8 @@ case "$script_type" in
         ip netns exec vpn ip link set vethvpn0 up
 
         # Port forwarding for ssh and internal vpn
+        ip netns exec vpn /usr/sbin/iptables -F POSTROUTING
+        ip netns exec vpn /usr/sbin/iptables -F PREROUTING
         #ip netns exec vpn /usr/sbin/iptables -t nat -A PREROUTING -p tcp -i "$dev" --dport 22 -j DNAT --to-destination 10.0.0.1:22
         #ip netns exec vpn /usr/sbin/iptables -t nat -A POSTROUTING -o vethvpn0 -p tcp --dport 22 -d 10.0.0.1 -j SNAT --to-source 10.0.0.2
         ip netns exec vpn /usr/sbin/iptables -t nat -A PREROUTING -p udp -i "$dev" --dport 1194 -j DNAT --to-destination 10.0.0.1:1194
